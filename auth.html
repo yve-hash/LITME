@@ -1,0 +1,1058 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <title>Account Access | UC-OSH Emergency Response</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body.auth-page {
+      background: #080808;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body.auth-page::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(
+          115deg,
+          rgba(0,0,0,.75) 0%,
+          rgba(0,0,0,.65) 30%,
+          rgba(0,0,0,.50) 65%,
+          rgba(0,0,0,.75) 100%
+        ),
+        url("./eto.jpg");
+      background-size: cover;
+      background-position: center 58%;
+      background-repeat: no-repeat;
+    }
+
+    .auth-page .aurora {
+      opacity: .18;
+      filter: blur(110px);
+      pointer-events: none;
+    }
+
+    .auth-page .aurora.a1 { background: #dc2626; }
+    .auth-page .aurora.a2 { background: #ea580c; }
+
+    .auth-layout {
+      position: relative;
+      z-index: 2;
+    }
+
+    .auth-intro { color: #fff; }
+    .auth-intro .brand { display: none; }
+
+    .auth-intro .eyebrow {
+      color: #ef4444;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .auth-intro h1 {
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: -2px;
+    }
+
+    .auth-intro .life-matters {
+      background: none !important;
+      background-image: none !important;
+      color: #ef4444 !important;
+      -webkit-text-fill-color: #ef4444 !important;
+      -webkit-background-clip: initial !important;
+      background-clip: initial !important;
+      text-shadow:
+        0 0 8px rgba(239,68,68,.35),
+        0 0 20px rgba(220,38,38,.25),
+        0 0 35px rgba(153,27,27,.18);
+    }
+
+    .auth-page .mini-signal {
+      background: rgba(12,12,12,.72);
+      border: 1px solid rgba(239,68,68,.25);
+      backdrop-filter: blur(18px);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .auth-page .mini-signal b { color: #fff; }
+    .auth-page .mini-signal small { color: #a3a3a3; }
+
+    .auth-page .signal-ring {
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239,68,68,.4);
+    }
+
+    .auth-page .signal-bars i { background: #ef4444; }
+
+    .auth-page .back-link {
+      color: #e5e5e5;
+      transition: color .25s ease;
+    }
+
+    .auth-page .back-link:hover { color: #ef4444; }
+
+    .auth-page .auth-card {
+      background: rgba(12,12,12,.88);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 24px;
+      box-shadow:
+        0 25px 80px rgba(0,0,0,.55),
+        0 0 35px rgba(153,27,27,.08);
+      backdrop-filter: blur(25px);
+    }
+
+    .auth-page .auth-card h2 { color: #fff; }
+    .auth-page .muted { color: #a3a3a3; }
+
+    .auth-page .auth-tabs {
+      background: #171717;
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .auth-page .auth-tab {
+      color: #a3a3a3;
+      border-radius: 9px;
+      transition: .25s ease;
+    }
+
+    .auth-page .auth-tab:hover { color: #fff; }
+
+    .auth-page .auth-tab.active {
+      background: linear-gradient(135deg,#991b1b,#dc2626);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(220,38,38,.2);
+    }
+
+    .auth-page .auth-card label {
+      color: #f5f5f5;
+      font-weight: 700;
+    }
+
+    .auth-page .auth-card input {
+      background: #171717;
+      border: 1px solid #333;
+      color: #fff;
+      border-radius: 12px;
+      transition: .25s ease;
+    }
+
+    .auth-page .auth-card input:focus {
+      background: #1c1c1c;
+      border-color: #dc2626;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(220,38,38,.12);
+    }
+
+    .auth-page .auth-card input::placeholder { color: #737373; }
+
+    .auth-page .otp-input {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: .55rem;
+      padding: 15px;
+    }
+
+    .auth-page .otp-description {
+      color: #a3a3a3;
+      font-size: .88rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .auth-page .btn-primary {
+      background: linear-gradient(135deg,#991b1b,#dc2626,#ef4444);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
+      box-shadow: 0 8px 22px rgba(220,38,38,.2);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .auth-page .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(220,38,38,.35);
+    }
+
+    .auth-page .btn-primary:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-page .btn-primary span { color: #fff; }
+
+    .auth-page .auth-disclaimer {
+      color: #a3a3a3;
+      font-size: .78rem;
+      line-height: 1.7;
+    }
+
+    .auth-page .form-error { color: #f87171; }
+
+    /* GOOGLE AUTHENTICATOR SETUP MODAL */
+
+    .totp-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0,0,0,.82);
+      backdrop-filter: blur(12px);
+    }
+
+    .totp-modal[hidden] { display: none; }
+
+    .totp-modal-card {
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      text-align: center;
+      color: #fff;
+      background: #111;
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 22px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.7);
+    }
+
+    .totp-modal-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    .totp-modal-card p {
+      color: #a3a3a3;
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    .totp-qr-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 22px auto;
+      padding: 15px;
+      width: fit-content;
+      min-width: 220px;
+      min-height: 220px;
+      background: #fff;
+      border-radius: 14px;
+    }
+
+    .totp-qr-container img {
+      display: block;
+      width: 210px;
+      height: 210px;
+      object-fit: contain;
+    }
+
+    .totp-instructions {
+      text-align: left;
+      margin: 20px 0;
+      padding-left: 22px;
+      color: #d4d4d4;
+      font-size: .88rem;
+      line-height: 1.8;
+    }
+
+    .totp-modal-card .otp-input {
+      margin: 8px 0 15px;
+    }
+
+    .totp-modal-card .form-error {
+      color: #f87171;
+      font-size: .85rem;
+    }
+
+    .totp-modal-card .btn-primary {
+      width: 100%;
+      padding: 14px;
+      cursor: pointer;
+    }
+
+    .totp-modal-card .btn-primary:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    @media (max-width:760px) {
+      body.auth-page::before {
+        background-image:
+          linear-gradient(
+            160deg,
+            rgba(5,5,5,.75),
+            rgba(25,5,5,.65),
+            rgba(5,5,5,.75)
+          ),
+          linear-gradient(
+            135deg,
+            rgba(153,27,27,.35),
+            rgba(194,65,12,.20)
+          ),
+          url("./red.jpg");
+        background-position: center 58%;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+
+      .auth-intro h1 { letter-spacing: -1px; }
+      .auth-page .auth-card { border-radius: 20px; }
+      .totp-modal-card { padding: 22px; }
+    }
+  </style>
+</head>
+
+<body class="auth-page">
+
+  <div class="aurora a1"></div>
+  <div class="aurora a2"></div>
+
+  <main class="auth-layout">
+
+    <section class="auth-intro">
+
+      <p class="eyebrow">
+        UC-OSH · EMERGENCY RESPONSE MONITORING
+      </p>
+
+      <h1>
+        See the Danger.<br>
+        <span class="life-matters">Light the Way.</span>
+      </h1>
+
+      <p>
+        Monitor reported gate conditions, sensor temperature,
+        and obstruction events. Unknown or offline status
+        is never treated as safe.
+      </p>
+
+      <div class="mini-signal">
+        <span class="signal-ring"></span>
+        <div>
+          <b>Live status awareness</b>
+          <small>Hardware feed when configured</small>
+        </div>
+        <span class="signal-bars">
+          <i></i><i></i><i></i><i></i>
+        </span>
+      </div>
+
+      <a class="back-link" href="index.html">
+        ← Back to welcome
+      </a>
+
+    </section>
+
+    <section class="auth-card glass-card">
+
+      <div class="auth-tabs" id="authTabs">
+
+        <button class="auth-tab active" data-mode="login" type="button">
+          Sign in
+        </button>
+
+        <button class="auth-tab" data-mode="signup" type="button">
+          Create account
+        </button>
+
+      </div>
+
+      <h2 id="formTitle">Welcome back</h2>
+
+      <p class="muted" id="formSub">
+        Sign in to open your monitoring workspace.
+      </p>
+
+      <!-- LOGIN / SIGNUP -->
+
+      <form id="authForm">
+
+        <div id="nameWrap" hidden>
+          <label for="fullName">Full name</label>
+          <input
+            id="fullName"
+            name="fullName"
+            autocomplete="name"
+            placeholder="Your name">
+        </div>
+
+        <label for="login" id="loginLabel">
+          Username or email
+        </label>
+
+        <input
+          id="login"
+          name="login"
+          autocomplete="username"
+          required
+          placeholder="Enter username or email">
+
+        <div id="emailWrap" hidden>
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com">
+        </div>
+
+        <label for="password">Password</label>
+
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          minlength="8"
+          autocomplete="current-password"
+          placeholder="At least 8 characters">
+
+        <div id="confirmPasswordWrap" hidden>
+          <label for="confirmPassword">Confirm password</label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Re-enter your password">
+        </div>
+
+        <a
+          href="#"
+          id="forgotLink"
+          class="back-link"
+          style="display:block;text-align:right;margin-top:12px">
+          Forgot password?
+        </a>
+
+        <p id="formError" class="form-error" hidden></p>
+
+        <button id="submitBtn" class="btn btn-primary full" type="submit">
+          Sign in <span>→</span>
+        </button>
+
+      </form>
+
+      <!-- LOGIN OTP -->
+
+      <form id="otpForm" hidden>
+
+        <p class="otp-description">
+          Two-factor authentication is enabled for your account.
+          Open Google Authenticator and enter the 6-digit
+          verification code displayed for LitMe.
+        </p>
+
+        <label for="otpCode">Authentication code</label>
+
+        <input
+          id="otpCode"
+          class="otp-input"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          minlength="6"
+          placeholder="000000"
+          required>
+
+        <p id="otpError" class="form-error" hidden></p>
+
+        <button id="verifyOtpBtn" class="btn btn-primary full" type="submit">
+          Verify code <span>→</span>
+        </button>
+
+        <button
+          id="backToLoginFromOtp"
+          class="btn btn-quiet full"
+          type="button">
+          Back to sign in
+        </button>
+
+      </form>
+
+      <!-- FORGOT PASSWORD -->
+
+      <form id="resetForm" hidden>
+
+        <label for="resetUsername">Username</label>
+        <input
+          id="resetUsername"
+          autocomplete="username"
+          required
+          placeholder="Your username">
+
+        <label for="resetEmail">Registered email</label>
+        <input
+          id="resetEmail"
+          type="email"
+          autocomplete="email"
+          required
+          placeholder="Email used for your account">
+
+        <label for="resetPassword">New password</label>
+        <input
+          id="resetPassword"
+          type="password"
+          minlength="8"
+          required
+          autocomplete="new-password"
+          placeholder="At least 8 characters">
+
+        <label for="resetConfirmPassword">Confirm new password</label>
+        <input
+          id="resetConfirmPassword"
+          type="password"
+          minlength="8"
+          required
+          autocomplete="new-password"
+          placeholder="Re-enter your new password">
+
+        <p id="resetError" class="form-error" hidden></p>
+
+        <button class="btn btn-primary full" type="submit">
+          Change password <span>→</span>
+        </button>
+
+        <button
+          class="btn btn-quiet full"
+          type="button"
+          id="backToLogin">
+          Back to sign in
+        </button>
+
+      </form>
+
+      <p class="auth-disclaimer" id="authDisclaimer">
+        Local prototype accounts are stored in SQLite.
+        Use a unique password; do not reuse a personal
+        or school password.
+      </p>
+
+    </section>
+
+  </main>
+
+  <!-- GOOGLE AUTHENTICATOR SETUP MODAL -->
+
+  <div class="totp-modal" id="totpSetupModal" hidden>
+
+    <div class="totp-modal-card">
+
+      <h2>Set up Google Authenticator</h2>
+
+      <p>
+        Your account has been created. Scan this QR code
+        using your Google Authenticator app to activate
+        two-factor authentication.
+      </p>
+
+      <div class="totp-qr-container">
+        <img id="totpQrImage" src="" alt="Google Authenticator QR Code">
+      </div>
+
+      <ol class="totp-instructions">
+        <li>Open Google Authenticator on your phone.</li>
+        <li>Tap the plus (+) button.</li>
+        <li>Select Scan a QR code.</li>
+        <li>Scan the QR code displayed above.</li>
+        <li>Enter the six-digit code generated by the app.</li>
+      </ol>
+
+      <form id="setupOtpForm">
+
+        <label for="setupOtpCode">Enter your 6-digit code</label>
+
+        <input
+          id="setupOtpCode"
+          class="otp-input"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          minlength="6"
+          placeholder="000000"
+          required>
+
+        <p id="setupOtpError" class="form-error" hidden></p>
+
+        <button
+          id="setupOtpBtn"
+          class="btn btn-primary"
+          type="submit">
+          Activate and continue <span>→</span>
+        </button>
+
+      </form>
+
+      <p style="font-size:.78rem;margin-top:16px">
+        Do not close or refresh this page until verification is complete.
+      </p>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    let mode =
+      new URLSearchParams(location.search).get('mode') === 'signup'
+        ? 'signup'
+        : 'login';
+
+    let setupInProgress = false;
+
+    /* =========================
+       SWITCH LOGIN / SIGNUP
+    ========================= */
+
+    function setMode(m) {
+      if (setupInProgress) return;
+
+      mode = m;
+
+      document.querySelectorAll('.auth-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.mode === m)
+      );
+
+      $('nameWrap').hidden = m !== 'signup';
+      $('emailWrap').hidden = m !== 'signup';
+      $('confirmPasswordWrap').hidden = m !== 'signup';
+      $('forgotLink').hidden = m !== 'login';
+
+      $('loginLabel').textContent =
+        m === 'signup' ? 'Username' : 'Username or email';
+
+      $('fullName').required = m === 'signup';
+      $('email').required = m === 'signup';
+      $('confirmPassword').required = m === 'signup';
+
+      $('login').placeholder =
+        m === 'signup'
+          ? 'Choose a username'
+          : 'Enter username or email';
+
+      $('password').autocomplete =
+        m === 'signup' ? 'new-password' : 'current-password';
+
+      $('password').minLength = m === 'signup' ? 8 : 1;
+
+      $('formTitle').textContent =
+        m === 'signup' ? 'Create your account' : 'Welcome back';
+
+      $('formSub').textContent =
+        m === 'signup'
+          ? 'Set up your LitMe profile to get started.'
+          : 'Sign in to open your monitoring workspace.';
+
+      $('submitBtn').innerHTML =
+        m === 'signup'
+          ? 'Create account <span>→</span>'
+          : 'Sign in <span>→</span>';
+
+      $('authTabs').hidden = false;
+      $('authForm').hidden = false;
+      $('otpForm').hidden = true;
+      $('resetForm').hidden = true;
+
+      $('formError').hidden = true;
+      $('otpError').hidden = true;
+      $('resetError').hidden = true;
+
+      $('authDisclaimer').hidden = false;
+    }
+
+    document.querySelectorAll('.auth-tab').forEach(b =>
+      b.onclick = () => setMode(b.dataset.mode)
+    );
+
+    /* =========================
+       FORGOT PASSWORD
+    ========================= */
+
+    $('forgotLink').onclick = e => {
+      e.preventDefault();
+
+      $('authForm').hidden = true;
+      $('otpForm').hidden = true;
+      $('resetForm').hidden = false;
+      $('authDisclaimer').hidden = true;
+
+      $('formTitle').textContent = 'Reset your password';
+
+      $('formSub').textContent =
+        'Enter your username and registered email to set a new password.';
+
+      $('resetError').hidden = true;
+      $('authTabs').hidden = true;
+    };
+
+    $('backToLogin').onclick = () => setMode('login');
+
+    /* =========================
+       SHOW LOGIN OTP
+    ========================= */
+
+    function showOtpForm() {
+      $('authTabs').hidden = true;
+      $('authForm').hidden = true;
+      $('resetForm').hidden = true;
+      $('otpForm').hidden = false;
+
+      $('authDisclaimer').hidden = true;
+
+      $('formTitle').textContent = 'Two-factor authentication';
+
+      $('formSub').textContent =
+        'Verify your identity to continue to LitMe.';
+
+      $('otpCode').value = '';
+      $('otpError').hidden = true;
+      $('otpCode').focus();
+    }
+
+    $('backToLoginFromOtp').onclick = () => {
+      $('otpForm').hidden = true;
+      $('authTabs').hidden = false;
+      $('authForm').hidden = false;
+      $('authDisclaimer').hidden = false;
+
+      $('formTitle').textContent = 'Welcome back';
+
+      $('formSub').textContent =
+        'Sign in to open your monitoring workspace.';
+
+      $('otpCode').value = '';
+      $('otpError').hidden = true;
+    };
+
+    setMode(mode);
+
+    /* =========================
+       OTP INPUT RESTRICTION
+    ========================= */
+
+    ['otpCode', 'setupOtpCode'].forEach(id => {
+      $(id).addEventListener('input', () => {
+        $(id).value = $(id).value.replace(/\D/g, '').slice(0, 6);
+      });
+    });
+
+    /* =========================
+       SHOW GOOGLE AUTHENTICATOR
+       SETUP MODAL
+    ========================= */
+
+    async function showSetupModal() {
+      setupInProgress = true;
+
+      $('authTabs').hidden = true;
+      $('authForm').hidden = true;
+      $('otpForm').hidden = true;
+      $('resetForm').hidden = true;
+      $('authDisclaimer').hidden = true;
+
+      $('formTitle').textContent = 'Set up two-factor authentication';
+
+      $('formSub').textContent =
+        'Connect your Google Authenticator app to secure your account.';
+
+      $('totpSetupModal').hidden = false;
+      $('setupOtpError').hidden = true;
+      $('setupOtpCode').value = '';
+
+      try {
+        const result = await LitMe.api('/api/2fa/setup', {
+          method: 'POST',
+          body: JSON.stringify({})
+        });
+
+        if (!result.qrCode) {
+          throw new Error(
+            'The server did not return a QR code. Please check the 2FA setup endpoint.'
+          );
+        }
+
+        $('totpQrImage').src = result.qrCode;
+        $('setupOtpCode').focus();
+
+      } catch (err) {
+        $('setupOtpError').textContent =
+          err.message || 'Could not generate your QR code.';
+
+        $('setupOtpError').hidden = false;
+        $('setupOtpBtn').disabled = true;
+      }
+    }
+
+    /* =========================
+       VERIFY INITIAL SETUP OTP
+    ========================= */
+
+    $('setupOtpForm').onsubmit = async e => {
+      e.preventDefault();
+
+      $('setupOtpError').hidden = true;
+
+      const token = $('setupOtpCode').value.trim();
+
+      if (!/^\d{6}$/.test(token)) {
+        $('setupOtpError').textContent =
+          'Please enter a valid 6-digit authentication code.';
+
+        $('setupOtpError').hidden = false;
+        return;
+      }
+
+      const button = $('setupOtpBtn');
+
+      button.disabled = true;
+      button.textContent = 'Verifying...';
+
+      try {
+        await LitMe.api('/api/2fa/verify-setup', {
+          method: 'POST',
+          body: JSON.stringify({ token })
+        });
+
+        $('totpSetupModal').hidden = true;
+
+        setupInProgress = false;
+
+        location.href = 'dashboard.html';
+
+      } catch (err) {
+        $('setupOtpError').textContent =
+          err.message || 'Invalid code. Please check Google Authenticator and try again.';
+
+        $('setupOtpError').hidden = false;
+
+        $('setupOtpCode').value = '';
+        $('setupOtpCode').focus();
+
+      } finally {
+        button.disabled = false;
+        button.innerHTML = 'Activate and continue <span>→</span>';
+      }
+    };
+
+    /* =========================
+       LOGIN / SIGNUP
+    ========================= */
+
+    $('authForm').onsubmit = async e => {
+      e.preventDefault();
+
+      $('formError').hidden = true;
+
+      if (
+        mode === 'signup' &&
+        $('password').value !== $('confirmPassword').value
+      ) {
+        $('formError').textContent = 'Passwords do not match.';
+        $('formError').hidden = false;
+        return;
+      }
+
+      const body = mode === 'signup'
+        ? {
+            username: $('login').value.trim(),
+            email: $('email').value.trim(),
+            password: $('password').value,
+            confirmPassword: $('confirmPassword').value,
+            fullName: $('fullName').value.trim()
+          }
+        : {
+            login: $('login').value.trim(),
+            password: $('password').value
+          };
+
+      const button = $('submitBtn');
+
+      button.disabled = true;
+      button.textContent = mode === 'signup'
+        ? 'Creating account...'
+        : 'Signing in...';
+
+      try {
+        const result = await LitMe.api(
+          '/api/auth/' + (mode === 'signup' ? 'signup' : 'login'),
+          {
+            method: 'POST',
+            body: JSON.stringify(body)
+          }
+        );
+
+        /*
+          SIGNUP:
+          Create account first, then immediately
+          open Google Authenticator setup.
+        */
+
+        if (mode === 'signup' && result.requiresTwoFactorSetup) {
+          await showSetupModal();
+          return;
+        }
+
+        /*
+          LOGIN:
+          Ask for OTP when the backend requires 2FA.
+        */
+
+        if (mode === 'login' && result.requiresTwoFactor) {
+          showOtpForm();
+          return;
+        }
+
+        /*
+          Do not redirect a signup to the dashboard
+          unless 2FA setup has been completed.
+        */
+
+        if (mode === 'signup') {
+          throw new Error(
+            'The server did not confirm two-factor setup. Please check the signup response.'
+          );
+        }
+
+        location.href = 'dashboard.html';
+
+      } catch (err) {
+        $('formError').textContent =
+          err.message || 'Authentication failed. Please try again.';
+
+        $('formError').hidden = false;
+
+      } finally {
+        button.disabled = false;
+
+        button.innerHTML =
+          mode === 'signup'
+            ? 'Create account <span>→</span>'
+            : 'Sign in <span>→</span>';
+      }
+    };
+
+    /* =========================
+       LOGIN OTP VERIFICATION
+    ========================= */
+
+    $('otpForm').onsubmit = async e => {
+      e.preventDefault();
+
+      $('otpError').hidden = true;
+
+      const token = $('otpCode').value.trim();
+
+      if (!/^\d{6}$/.test(token)) {
+        $('otpError').textContent =
+          'Please enter a valid 6-digit authentication code.';
+
+        $('otpError').hidden = false;
+        return;
+      }
+
+      const button = $('verifyOtpBtn');
+
+      button.disabled = true;
+      button.textContent = 'Verifying...';
+
+      try {
+        await LitMe.api('/api/auth/verify-2fa', {
+          method: 'POST',
+          body: JSON.stringify({ token })
+        });
+
+        location.href = 'dashboard.html';
+
+      } catch (err) {
+        $('otpError').textContent =
+          err.message || 'Invalid authentication code. Please try again.';
+
+        $('otpError').hidden = false;
+
+        $('otpCode').value = '';
+        $('otpCode').focus();
+
+      } finally {
+        button.disabled = false;
+        button.innerHTML = 'Verify code <span>→</span>';
+      }
+    };
+
+    /* =========================
+       RESET PASSWORD
+    ========================= */
+
+    $('resetForm').onsubmit = async e => {
+      e.preventDefault();
+
+      $('resetError').hidden = true;
+
+      if (
+        $('resetPassword').value !==
+        $('resetConfirmPassword').value
+      ) {
+        $('resetError').textContent = 'Passwords do not match.';
+        $('resetError').hidden = false;
+        return;
+      }
+
+      try {
+        await LitMe.api('/api/auth/reset-password', {
+          method: 'POST',
+          body: JSON.stringify({
+            username: $('resetUsername').value.trim(),
+            email: $('resetEmail').value.trim(),
+            password: $('resetPassword').value
+          })
+        });
+
+        $('resetError').textContent =
+          'Password changed. You can now sign in.';
+
+        $('resetError').hidden = false;
+        $('resetError').style.color = '#55efb0';
+
+        $('resetForm').reset();
+
+      } catch (err) {
+        $('resetError').textContent = err.message;
+        $('resetError').hidden = false;
+      }
+    };
+  </script>
+
+</body>
+</html>

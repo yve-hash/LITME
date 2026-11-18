@@ -1,0 +1,629 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>Profile | LitMe</title>
+<link rel="stylesheet" href="styles.css">
+
+<style>
+:root {
+    --red: #dc2626;
+    --red-light: #ef4444;
+    --muted: #a3a3a3;
+    --border: rgba(255,255,255,.09);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        linear-gradient(
+            115deg,
+            rgba(0,0,0,.75) 0%,
+            rgba(0,0,0,.65) 30%,
+            rgba(0,0,0,.50) 65%,
+            rgba(0,0,0,.75) 100%
+        ),
+        url("./eto.jpg") center 58% / cover fixed no-repeat;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* MAIN LAYOUT */
+.app-layout {
+    position: relative;
+    min-height: 100vh;
+    z-index: 1;
+}
+
+/* SIDEBAR - MATCH DASHBOARD AND ALERTS */
+.sidebar {
+    background: linear-gradient(
+        180deg,
+        #24100c 0%,
+        #180c09 55%,
+        #100908 100%
+    ) !important;
+    border-right: 1px solid #000000 !important;
+}
+
+/* SIDEBAR AND MAIN CONTENT */
+@media (min-width: 701px) {
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 288px !important;
+        height: 100vh;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .app-main {
+        width: calc(100% - 288px) !important;
+        max-width: none !important;
+        margin-left: 288px !important;
+        padding: 35px clamp(22px, 3.2vw, 55px);
+    }
+}
+
+.app-main {
+    min-height: 100vh;
+    color: white;
+}
+
+/* TOPBAR */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.topbar h1 {
+    color: white;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin: 7px 0;
+}
+
+.eyebrow {
+    color: var(--red-light);
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: .84rem;
+    line-height: 1.7;
+}
+
+.avatar-button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* PROFILE PANEL */
+.panel {
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(18,18,18,.95);
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+/* PROFILE HEADER */
+.profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 27px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-photo-wrap {
+    position: relative;
+    width: 112px;
+    height: 112px;
+    flex: 0 0 112px;
+    overflow: hidden;
+    border: 3px solid rgba(239,68,68,.4);
+    border-radius: 50%;
+    background: #222;
+}
+
+.profile-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-photo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #7f1d1d, #dc2626);
+    color: white;
+    font-size: 2.6rem;
+    font-weight: 900;
+}
+
+.profile-hero h2 {
+    color: white;
+    font-size: 1.35rem;
+    margin: 0 0 5px;
+}
+
+.profile-hero p {
+    margin: 0 0 13px;
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 17px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: .76rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    border-color: rgba(255,255,255,.16);
+    background: rgba(255,255,255,.04);
+    color: #eee;
+}
+
+.btn-outline:hover {
+    border-color: rgba(239,68,68,.4);
+    background: rgba(220,38,38,.1);
+}
+
+.btn-primary {
+    background: var(--red);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #a91d2c;
+}
+
+.btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.tiny {
+    font-size: .7rem;
+    line-height: 1.7;
+}
+
+.profile-hero .tiny {
+    margin-top: 10px;
+}
+
+/* PROFILE FORM */
+.profile-form {
+    width: 100%;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 21px;
+}
+
+.form-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.form-grid .wide {
+    grid-column: 1 / -1;
+}
+
+.form-grid label {
+    color: #e5e5e5;
+    font-size: .76rem;
+    font-weight: 800;
+}
+
+.form-grid input,
+.form-grid textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 13px 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    outline: none;
+    background: #191919;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: .83rem;
+    transition: .2s ease;
+}
+
+.form-grid textarea {
+    min-height: 115px;
+    resize: vertical;
+}
+
+.form-grid input::placeholder,
+.form-grid textarea::placeholder {
+    color: #707070;
+}
+
+.form-grid input:focus,
+.form-grid textarea:focus {
+    border-color: rgba(239,68,68,.65);
+    box-shadow: 0 0 0 3px rgba(220,38,38,.1);
+}
+
+.button-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+#profileResult {
+    font-size: .75rem;
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    z-index: 2000;
+    right: 24px;
+    bottom: 24px;
+    max-width: min(380px, calc(100vw - 40px));
+    padding: 13px 18px;
+    border: 1px solid rgba(239,68,68,.3);
+    border-radius: 12px;
+    background: #171717;
+    color: white;
+    box-shadow: 0 10px 35px rgba(0,0,0,.4);
+}
+
+/* TABLET AND MOBILE */
+@media (max-width: 700px) {
+    body {
+        background:
+            linear-gradient(
+                115deg,
+                rgba(0,0,0,.75) 0%,
+                rgba(0,0,0,.65) 30%,
+                rgba(0,0,0,.50) 65%,
+                rgba(0,0,0,.75) 100%
+            ),
+            url("./eto.jpg") center 58% / cover scroll no-repeat;
+    }
+
+    .app-main {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 23px 16px;
+    }
+
+    .topbar h1 {
+        font-size: 1.65rem;
+    }
+
+    .panel {
+        padding: 19px;
+        border-radius: 15px;
+    }
+
+    .profile-hero {
+        gap: 17px;
+    }
+
+    .profile-photo-wrap {
+        width: 85px;
+        height: 85px;
+        flex-basis: 85px;
+    }
+
+    .profile-photo-fallback {
+        font-size: 2rem;
+    }
+
+    .form-grid {
+        gap: 17px;
+    }
+}
+
+@media (max-width: 500px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid .wide {
+        grid-column: auto;
+    }
+
+    .profile-hero {
+        align-items: flex-start;
+    }
+
+    .profile-hero h2 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .app-main {
+        padding: 19px 12px;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="app-main">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">ACCOUNT SETTINGS</p>
+                <h1>Your profile</h1>
+                <p class="muted">
+                    Manage your basic information and profile photo.
+                </p>
+            </div>
+
+        </header>
+
+        <section class="panel profile-panel">
+
+            <div class="profile-hero">
+
+                <div class="profile-photo-wrap">
+                    <img id="profilePhoto" alt="Profile photo" hidden>
+                    <div id="photoFallback" class="profile-photo-fallback">U</div>
+                </div>
+
+                <div>
+                    <h2 id="profileName">Your profile</h2>
+                    <p id="profileUsername" class="muted">@username</p>
+
+                    <label for="photoFile" class="btn btn-outline">
+                        Upload profile picture
+                    </label>
+
+                    <input
+                        id="photoFile"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp,image/gif"
+                        hidden
+                    >
+
+                    <p class="tiny muted">
+                        JPG, PNG, WEBP or GIF · maximum 4 MB
+                    </p>
+                </div>
+
+            </div>
+
+            <form id="profileForm" class="profile-form">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label for="fullName">Full name</label>
+                        <input
+                            id="fullName"
+                            maxlength="120"
+                            placeholder="Your name"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            maxlength="120"
+                            placeholder="you@example.com"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="phone">Phone (optional)</label>
+                        <input
+                            id="phone"
+                            maxlength="120"
+                            placeholder="Phone number"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="department">Department / role</label>
+                        <input
+                            id="department"
+                            maxlength="120"
+                            placeholder="Department or role"
+                        >
+                    </div>
+
+                    <div class="wide">
+                        <label for="bio">About</label>
+                        <textarea
+                            id="bio"
+                            rows="4"
+                            maxlength="500"
+                            placeholder="A short profile description"
+                        ></textarea>
+                    </div>
+
+                </div>
+
+                <div class="button-row">
+                    <button class="btn btn-primary" type="submit">
+                        Save profile
+                    </button>
+
+                    <span
+                        id="profileResult"
+                        class="muted"
+                        role="status"
+                    ></span>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="app.js"></script>
+
+<script>
+const $ = id => document.getElementById(id);
+
+async function load() {
+    try {
+        const r = await LitMe.api('/api/me');
+        const u = r.user;
+
+        $('profileName').textContent = u.fullName || u.username;
+        $('profileUsername').textContent = '@' + u.username;
+
+        ['fullName', 'email', 'phone', 'department', 'bio'].forEach(k => {
+            $(k).value = u[k] || '';
+        });
+
+        if (u.photo) {
+            $('profilePhoto').src = u.photo;
+            $('profilePhoto').hidden = false;
+            $('photoFallback').hidden = true;
+        } else {
+            $('photoFallback').textContent =
+                (u.fullName || u.username || 'U')[0].toUpperCase();
+        }
+
+    } catch (e) {
+        location.href = 'auth.html?mode=login';
+    }
+}
+
+$('profileForm').onsubmit = async e => {
+    e.preventDefault();
+
+    const saveButton = $('profileForm').querySelector('[type="submit"]');
+
+    saveButton.disabled = true;
+    saveButton.textContent = 'Saving...';
+
+    try {
+        const r = await LitMe.api('/api/profile', {
+            method: 'PUT',
+            body: JSON.stringify({
+                fullName: $('fullName').value,
+                email: $('email').value,
+                phone: $('phone').value,
+                department: $('department').value,
+                bio: $('bio').value
+            })
+        });
+
+        $('profileName').textContent =
+            r.user.fullName || r.user.username;
+
+        $('profileUsername').textContent = '@' + r.user.username;
+
+        $('profileResult').textContent = 'Profile saved to SQLite.';
+
+        LitMe.setNavUser(r.user);
+
+    } catch (e) {
+        $('profileResult').textContent = e.message;
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Save profile';
+    }
+};
+
+$('photoFile').onchange = async () => {
+    const f = $('photoFile').files[0];
+
+    if (!f) return;
+
+    const fd = new FormData();
+    fd.append('photo', f);
+
+    try {
+        const r = await LitMe.api('/api/profile/photo', {
+            method: 'POST',
+            body: fd
+        });
+
+        $('profilePhoto').src = r.user.photo;
+        $('profilePhoto').hidden = false;
+        $('photoFallback').hidden = true;
+
+        LitMe.setNavUser(r.user);
+        LitMe.toast('Profile photo saved.');
+
+    } catch (e) {
+        LitMe.toast(e.message);
+    }
+};
+
+load();
+</script>
+
+</body>
+</html>

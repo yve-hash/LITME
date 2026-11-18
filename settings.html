@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>Hardware & Settings | LitMe</title>
+<link rel="stylesheet" href="styles.css">
+
+<style>
+:root {
+    --red: #dc2626;
+    --red-light: #ef4444;
+    --muted: #a3a3a3;
+    --border: rgba(255,255,255,.09);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        linear-gradient(
+            115deg,
+            rgba(0,0,0,.75) 0%,
+            rgba(0,0,0,.65) 30%,
+            rgba(0,0,0,.50) 65%,
+            rgba(0,0,0,.75) 100%
+        ),
+        url("./eto.jpg") center 58% / cover fixed no-repeat;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* MAIN LAYOUT */
+.app-layout {
+    position: relative;
+    min-height: 100vh;
+    z-index: 1;
+}
+
+/* SIDEBAR - MATCH DASHBOARD AND ALERTS */
+.sidebar {
+    background: linear-gradient(
+        180deg,
+        #24100c 0%,
+        #180c09 55%,
+        #100908 100%
+    ) !important;
+    border-right: 1px solid #000000 !important;
+}
+
+@media (min-width: 701px) {
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 288px !important;
+        height: 100vh;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .app-main {
+        width: calc(100% - 288px) !important;
+        max-width: none !important;
+        margin-left: 288px !important;
+        padding: 35px clamp(22px, 3.2vw, 55px);
+    }
+}
+
+.app-main {
+    min-height: 100vh;
+    color: white;
+}
+
+/* TOPBAR */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.topbar h1 {
+    color: white;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin: 7px 0;
+}
+
+.eyebrow {
+    color: var(--red-light);
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: .84rem;
+    line-height: 1.7;
+}
+
+.avatar-button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: linear-gradient(135deg,#991b1b,#dc2626);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* PANELS */
+.panel {
+    padding: 25px;
+    margin-bottom: 22px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(18,18,18,.95);
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    backdrop-filter: blur(8px);
+}
+
+.panel h2 {
+    color: white;
+    font-size: 1.08rem;
+    font-weight: 800;
+    margin: 0 0 12px;
+}
+
+.panel > .muted {
+    font-size: .79rem;
+    margin: 0 0 16px;
+}
+
+/* DEVICE NOTICE */
+.holo-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 21px 23px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    background: rgba(20,20,20,.92);
+    backdrop-filter: blur(8px);
+}
+
+.holo-banner.neutral {
+    border-color: rgba(239,68,68,.2);
+    background: linear-gradient(
+        110deg,
+        rgba(127,29,29,.12),
+        rgba(20,20,20,.95) 70%
+    );
+}
+
+.holo-symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    border: 1px solid rgba(239,68,68,.25);
+    border-radius: 13px;
+    background: rgba(220,38,38,.1);
+    color: #fca5a5;
+    font-size: 1.4rem;
+}
+
+.holo-banner b {
+    display: block;
+    color: white;
+    font-size: .82rem;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+}
+
+.holo-banner p {
+    color: #b3b3b3;
+    font-size: .8rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ENDPOINT */
+.endpoint-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px;
+    margin: 17px 0 20px;
+    border: 1px solid rgba(239,68,68,.25);
+    border-radius: 12px;
+    background: rgba(220,38,38,.07);
+}
+
+.endpoint-box code {
+    color: #fca5a5;
+    overflow-wrap: anywhere;
+    font-size: .8rem;
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 9px 15px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: Arial,sans-serif;
+    font-size: .73rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    border-color: rgba(255,255,255,.16);
+    background: rgba(255,255,255,.04);
+    color: #eee;
+}
+
+.btn-outline:hover {
+    border-color: rgba(239,68,68,.4);
+    background: rgba(220,38,38,.1);
+}
+
+/* CODE BLOCKS */
+pre {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 17px;
+    margin: 12px 0 20px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    background: #090909;
+    color: #fca5a5;
+    font-size: .78rem;
+    line-height: 1.7;
+}
+
+code {
+    font-family: Consolas,Monaco,monospace;
+}
+
+.panel p code {
+    padding: 3px 6px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 5px;
+    background: #202020;
+    color: #fca5a5;
+    overflow-wrap: anywhere;
+}
+
+/* SENSOR DEFINITIONS */
+.definition-list {
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    margin: 18px 0;
+    list-style: none;
+}
+
+.definition-list li {
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: rgba(255,255,255,.025);
+    color: #bdbdbd;
+    font-size: .79rem;
+    line-height: 1.7;
+}
+
+.definition-list b {
+    color: white;
+}
+
+/* GATE INVENTORY */
+.gate-list {
+    display: grid;
+    gap: 12px;
+    margin: 17px 0;
+}
+
+.gate-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 17px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: rgba(255,255,255,.025);
+}
+
+.gate-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.gate-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.gate-title-row h3 {
+    margin: 0;
+    color: white;
+    font-size: .9rem;
+}
+
+.gate-card p {
+    margin: 7px 0;
+    color: var(--muted);
+    font-size: .76rem;
+}
+
+.led {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
+    border-radius: 50%;
+    background: #9ca3af;
+}
+
+.led.passable {
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34,197,94,.4);
+}
+
+.led.obstructed {
+    background: #ef4444;
+    box-shadow: 0 0 12px rgba(239,68,68,.4);
+}
+
+.status-chip {
+    padding: 5px 9px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    font-size: .59rem;
+    font-weight: 800;
+}
+
+.status-chip.passable {
+    color: #4ade80;
+    background: rgba(34,197,94,.08);
+}
+
+.status-chip.obstructed {
+    color: #f87171;
+    background: rgba(239,68,68,.08);
+}
+
+.status-chip.unknown {
+    color: #aaa;
+    background: rgba(255,255,255,.06);
+}
+
+/* LINKS */
+.text-link {
+    display: inline-block;
+    color: var(--red-light);
+    font-size: .78rem;
+    font-weight: 800;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.text-link:hover {
+    color: #fca5a5;
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    z-index: 2000;
+    right: 24px;
+    bottom: 24px;
+    max-width: min(380px,calc(100vw - 40px));
+    padding: 13px 18px;
+    border: 1px solid rgba(239,68,68,.3);
+    border-radius: 12px;
+    background: #171717;
+    color: white;
+    box-shadow: 0 10px 35px rgba(0,0,0,.4);
+}
+
+/* TABLET AND MOBILE LAYOUT */
+@media (max-width: 700px) {
+    body {
+        background:
+            linear-gradient(
+                115deg,
+                rgba(0,0,0,.75) 0%,
+                rgba(0,0,0,.65) 30%,
+                rgba(0,0,0,.50) 65%,
+                rgba(0,0,0,.75) 100%
+            ),
+            url("./eto.jpg") center 58% / cover scroll no-repeat;
+    }
+
+    .app-main {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 23px 16px;
+    }
+
+    .topbar h1 {
+        font-size: 1.65rem;
+    }
+
+    .panel {
+        padding: 18px;
+        border-radius: 15px;
+    }
+
+    .holo-banner {
+        padding: 17px;
+    }
+
+    .endpoint-box {
+        align-items: flex-start;
+    }
+
+    .endpoint-box .btn {
+        width: 100%;
+    }
+
+    .gate-card {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 400px) {
+    .app-main {
+        padding: 19px 12px;
+    }
+
+    .panel {
+        padding: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+<aside id="sidebar" class="sidebar"></aside>
+
+<main class="app-main">
+
+<header class="topbar">
+    <div>
+        <p class="eyebrow">DEVICE INTEGRATION</p>
+        <h1>Hardware settings</h1>
+        <p class="muted">
+            Connect the ESP32/Arduino gateway to report gate status and temperature.
+        </p>
+    </div>
+
+</header>
+
+<section class="holo-banner neutral">
+    <span class="holo-symbol">⌁</span>
+    <div>
+        <b>LOCAL BUZZER IS PRIMARY</b>
+        <p>
+            Obstruction confirmation should activate the buzzer directly on the
+            microcontroller. Do not make the alarm depend on browser audio,
+            a server, or internet access.
+        </p>
+    </div>
+</section>
+
+<section class="panel">
+
+    <h2>Device event endpoint</h2>
+
+    <p class="muted">
+        Send HTTP POST JSON to <code>/api/hardware/events</code>.
+        The app validates the device token and stores events in SQLite.
+    </p>
+
+    <div class="endpoint-box">
+        <code id="endpoint">http://localhost:3000/api/hardware/events</code>
+        <button class="btn btn-outline" id="copyEndpoint">Copy endpoint</button>
+    </div>
+
+    <p class="muted">For a gate status:</p>
+
+    <pre><code>{"type":"gate","id":"gate6","status":"obstructed","note":"Obstruction confirmed","temperature":27.4}</code></pre>
+
+    <p class="muted">For a temperature-only update:</p>
+
+    <pre><code>{"type":"sensor","id":"gate6","temperature":28.1,"humidity":66}</code></pre>
+
+    <p class="muted">
+        Required header: <code>x-litme-token: YOUR_DEVICE_TOKEN</code>.
+        Set <code>LITME_HARDWARE_TOKEN</code> before launching the server
+        and use the same value on your gateway. Keep the token private.
+    </p>
+
+</section>
+
+<section class="panel">
+
+    <h2>Sensor confirmation behavior</h2>
+
+    <ul class="definition-list">
+        <li>
+            <b>Green / passable:</b>
+            controller has confirmed the path clear using its approved logic.
+        </li>
+
+        <li>
+            <b>Red / obstructed:</b>
+            controller confirmation logic detects a blockage and activates
+            the local buzzer.
+        </li>
+
+        <li>
+            <b>Unknown / offline:</b>
+            no fresh trustworthy report is available, or the sensor/controller
+            is disconnected.
+        </li>
+
+        <li>
+            <b>Temperature:</b>
+            only show measured sensor readings; missing readings remain unavailable.
+        </li>
+    </ul>
+
+    <p class="muted">
+        Use freshness timeouts on the controller or gateway.
+        Never turn a stale reading into a green status.
+    </p>
+
+</section>
+
+<section class="panel">
+
+    <h2>Current gate inventory</h2>
+
+    <div id="gateList" class="gate-list"></div>
+
+    <a class="text-link" href="maps.html">
+        Manage gate markers on the map ↗
+    </a>
+
+</section>
+
+</main>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="app.js"></script>
+
+<script>
+const $ = id => document.getElementById(id);
+
+$('endpoint').textContent =
+    location.origin + '/api/hardware/events';
+
+$('copyEndpoint').onclick = () => {
+    navigator.clipboard?.writeText($('endpoint').textContent)
+        .then(() => LitMe.toast('Endpoint copied.'))
+        .catch(() => LitMe.toast('Copy unavailable in this browser.'));
+};
+
+async function load() {
+    try {
+        const r = await LitMe.api('/api/gates');
+
+        $('gateList').innerHTML = r.gates.map(g => `
+            <article class="gate-card">
+
+                <div class="led ${g.status}">
+                    <span></span>
+                </div>
+
+                <div class="gate-main">
+
+                    <div class="gate-title-row">
+                        <h3>${LitMe.esc(g.name)}</h3>
+                        <span class="status-chip ${g.status}">
+                            ${g.status.toUpperCase()}
+                        </span>
+                    </div>
+
+                    <p>
+                        ${LitMe.esc(g.building)} ·
+                        ${g.sensor_online ? 'Online' : 'Offline / unconfirmed'} ·
+                        ${g.temperature == null
+                            ? 'Temperature unavailable'
+                            : Number(g.temperature).toFixed(1) + ' °C'}
+                    </p>
+
+                </div>
+
+            </article>
+        `).join('') || '<p class="muted">No gates configured.</p>';
+
+    } catch (e) {
+        location.href = 'auth.html?mode=login';
+    }
+}
+
+load();
+</script>
+
+</body>
+</html>
+ 

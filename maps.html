@@ -1,0 +1,1140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>Digital Floor Plans | LitMe</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+:root {
+    --red: #dc2626;
+    --red-light: #ef4444;
+    --black: #080808;
+    --muted: #a3a3a3;
+    --border: rgba(255,255,255,.09);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        linear-gradient(
+            115deg,
+            rgba(0,0,0,.75) 0%,
+            rgba(0,0,0,.65) 30%,
+            rgba(0,0,0,.50) 65%,
+            rgba(0,0,0,.75) 100%
+        ),
+        url("./eto.jpg") center 58% / cover fixed no-repeat;
+    background-color: var(--black);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* MAIN LAYOUT */
+
+.app-layout {
+    display: block !important;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: clip;
+}
+
+.app-main {
+    min-height: 100vh;
+    min-width: 0;
+    color: white;
+}
+
+@media (min-width: 701px) {
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 288px !important;
+        height: 100vh;
+        z-index: 1000;
+        overflow-y: auto;
+        background: linear-gradient(
+            180deg,
+            #24100c 0%,
+            #180c09 55%,
+            #100908 100%
+        );
+        border-right: 1px solid #000;
+    }
+
+    .app-main {
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        margin-left: 288px !important;
+        padding: 35px clamp(22px, 3.2vw, 55px);
+        overflow-x: hidden;
+    }
+}
+
+/* HEADER */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.topbar h1 {
+    color: white;
+    font-size: clamp(1.8rem,3vw,2.4rem);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin: 7px 0;
+}
+
+.eyebrow {
+    color: var(--red-light);
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: .84rem;
+    line-height: 1.7;
+}
+
+/* PANEL */
+
+.panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 25px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(18,18,18,.95);
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.section-heading h2 {
+    color: white;
+    font-size: 1.08rem;
+    margin: 0 0 7px;
+}
+
+.section-heading .muted {
+    margin: 0;
+    font-size: .77rem;
+}
+
+/* BUTTONS */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: .76rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    background: var(--red);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #a91d2c;
+}
+
+.btn-outline {
+    border-color: rgba(255,255,255,.16);
+    background: rgba(255,255,255,.04);
+    color: #eee;
+}
+
+.btn-outline:hover {
+    border-color: rgba(239,68,68,.4);
+    background: rgba(220,38,38,.1);
+}
+
+.btn-danger {
+    border-color: rgba(239,68,68,.3);
+    background: rgba(220,38,38,.10);
+    color: #fca5a5;
+}
+
+.btn-danger:hover {
+    background: rgba(220,38,38,.2);
+}
+
+/* FLOOR PLAN NAVIGATION */
+
+.floor-plan-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 16px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: rgba(255,255,255,.025);
+}
+
+.floor-plan-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.floor-plan-info small {
+    display: block;
+    color: #888;
+    font-size: .63rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+}
+
+.floor-plan-info strong {
+    display: block;
+    color: white;
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.floor-plan-count {
+    color: #999;
+    font-size: .7rem;
+    margin-top: 6px;
+}
+
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.carousel-arrow {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 10px;
+    background: #202020;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.carousel-arrow:hover {
+    border-color: rgba(239,68,68,.5);
+    background: rgba(220,38,38,.15);
+}
+
+.carousel-arrow:disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+.carousel-position {
+    color: #aaa;
+    font-size: .75rem;
+    min-width: 45px;
+    text-align: center;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: 12px;
+    margin: 0 0 20px;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 20px;
+    background: #555;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.carousel-dot.active {
+    width: 24px;
+    background: var(--red);
+}
+
+/* IMAGE DISPLAY */
+
+.floor-plan-display {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 480px;
+    padding: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 15px;
+    background: #101010;
+}
+
+/* Only the uploaded image is shown here */
+
+#floorPlanImage {
+    display: block;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 680px !important;
+    object-fit: contain !important;
+    object-position: center;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+#floorPlanImage[hidden] {
+    display: none !important;
+}
+
+/* Placeholder appears ONLY when no image exists */
+
+.floor-plan-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 35px 20px;
+    text-align: center;
+}
+
+.placeholder-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 75px;
+    height: 75px;
+    border: 1px solid rgba(239,68,68,.25);
+    border-radius: 20px;
+    background: rgba(220,38,38,.1);
+    color: #f87171;
+    font-size: 2rem;
+}
+
+.floor-plan-placeholder h3 {
+    margin: 5px 0 0;
+    font-size: 1rem;
+}
+
+.floor-plan-placeholder p {
+    max-width: 340px;
+    margin: 0;
+    color: #999;
+    font-size: .78rem;
+    line-height: 1.7;
+}
+
+/* ACTIONS */
+
+.floor-plan-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.action-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.upload-label {
+    cursor: pointer;
+}
+
+.upload-information {
+    margin-top: 15px;
+    color: #858585;
+    font-size: .7rem;
+    line-height: 1.7;
+}
+
+/* EMPTY STATE */
+
+.empty-state {
+    padding: 45px 20px;
+    text-align: center;
+    border: 1px dashed rgba(255,255,255,.15);
+    border-radius: 14px;
+    background: rgba(255,255,255,.015);
+}
+
+.empty-state h3 {
+    margin: 0 0 9px;
+    color: white;
+}
+
+.empty-state p {
+    margin: 0;
+    color: #999;
+    font-size: .8rem;
+    line-height: 1.7;
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    z-index: 2000;
+    right: 24px;
+    bottom: 24px;
+    max-width: min(380px,calc(100vw - 40px));
+    padding: 13px 18px;
+    border: 1px solid rgba(239,68,68,.3);
+    border-radius: 12px;
+    background: #171717;
+    color: white;
+    box-shadow: 0 10px 35px rgba(0,0,0,.4);
+    font-size: .8rem;
+    line-height: 1.5;
+}
+
+/* MOBILE */
+
+@media(max-width:700px) {
+    body {
+        background-attachment: scroll;
+        background-position: center 58%;
+    }
+
+    .app-layout {
+        display: block !important;
+        width: 100%;
+    }
+
+    .app-main {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 23px 16px;
+    }
+
+    .topbar h1 {
+        font-size: 1.65rem;
+    }
+
+    .panel {
+        padding: 17px;
+        border-radius: 15px;
+    }
+
+    .floor-plan-toolbar {
+        align-items: flex-start;
+    }
+
+    .floor-plan-info {
+        flex-basis: 100%;
+    }
+
+    .carousel-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .floor-plan-display {
+        min-height: 340px;
+        padding: 10px;
+    }
+
+    #floorPlanImage {
+        max-height: 500px !important;
+        max-width: 100% !important;
+    }
+
+    .floor-plan-actions {
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    .floor-plan-actions .btn {
+        width: 100%;
+    }
+
+    .action-group {
+        display: contents;
+    }
+}
+
+@media(max-width:400px) {
+    .app-main {
+        padding: 19px 12px;
+    }
+
+    .panel {
+        padding: 14px;
+    }
+
+    .floor-plan-display {
+        min-height: 290px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <main class="app-main">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">SCIENCE BUILDING · CAMPUS MAPS</p>
+                <h1>Digital Floor Plans</h1>
+                <p class="muted">
+                    Organize, upload, and manage your campus floor plan images
+                    in one place.
+                </p>
+            </div>
+        </header>
+
+        <section class="panel">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Floor Plan Collection</h2>
+                    <p class="muted">
+                        Add and manage multiple floor plans for different
+                        campus areas.
+                    </p>
+                </div>
+
+                <button id="addFloorPlan" class="btn btn-primary" type="button">
+                    ＋ Add Floor Plan
+                </button>
+            </div>
+
+            <div id="emptyState" class="empty-state" hidden>
+                <h3>No Floor Plans Yet</h3>
+                <p>
+                    Start by adding a floor plan. You can upload an image
+                    and rename it anytime.
+                </p>
+            </div>
+
+            <div id="floorPlanContent">
+
+                <div class="floor-plan-toolbar">
+
+                    <div class="floor-plan-info">
+                        <small>SELECTED FLOOR PLAN</small>
+                        <strong id="currentPlanName">Loading floor plans...</strong>
+                        <div class="floor-plan-count" id="planCounter">
+                            Please wait
+                        </div>
+                    </div>
+
+                    <div class="carousel-controls">
+                        <button
+                            id="previousPlan"
+                            class="carousel-arrow"
+                            type="button"
+                            title="Previous floor plan"
+                            aria-label="Previous floor plan">
+                            &#8249;
+                        </button>
+
+                        <span class="carousel-position" id="carouselPosition">
+                            0 / 0
+                        </span>
+
+                        <button
+                            id="nextPlan"
+                            class="carousel-arrow"
+                            type="button"
+                            title="Next floor plan"
+                            aria-label="Next floor plan">
+                            &#8250;
+                        </button>
+                    </div>
+
+                </div>
+
+                <div id="carouselDots" class="carousel-dots"></div>
+
+                <div class="floor-plan-display" id="floorPlanDisplay">
+
+                    <!-- This placeholder is hidden when an image is uploaded -->
+                    <div
+                        class="floor-plan-placeholder"
+                        id="imagePlaceholder">
+
+                        <div class="placeholder-icon">⌖</div>
+
+                        <h3>No Image Uploaded</h3>
+
+                        <p>
+                            Upload a floor plan image to display it here.
+                            Supported formats include JPG, PNG, and WEBP.
+                        </p>
+                    </div>
+
+                    <!-- Only this image appears after a successful upload -->
+                    <img
+                        id="floorPlanImage"
+                        alt="Selected digital floor plan"
+                        hidden>
+
+                </div>
+
+                <div class="floor-plan-actions">
+
+                    <div class="action-group">
+                        <button
+                            id="renameFloorPlan"
+                            class="btn btn-outline"
+                            type="button">
+                            Rename Floor Plan
+                        </button>
+
+                        <button
+                            id="deleteFloorPlan"
+                            class="btn btn-danger"
+                            type="button">
+                            Delete Floor Plan
+                        </button>
+                    </div>
+
+                    <label class="btn btn-primary upload-label" for="planFile">
+                        ＋ Upload Floor Plan Image
+                    </label>
+
+                    <input
+                        id="planFile"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        hidden>
+
+                </div>
+
+                <p class="upload-information">
+                    Supported image formats: JPG, PNG, WEBP, and GIF.
+                    Maximum file size: 4 MB. Uploading a new image replaces
+                    the existing image for the selected floor plan.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="app.js"></script>
+
+<script>
+/* ==========================================
+   LITME DIGITAL FLOOR PLAN MANAGEMENT
+========================================== */
+
+const $ = id => document.getElementById(id);
+
+let floorPlans = [];
+let currentPlanIndex = 0;
+let currentPlan = null;
+let toastTimer = null;
+
+/* HELPERS */
+
+function showToast(message) {
+    const toast = $('toast');
+    toast.textContent = message;
+    toast.hidden = false;
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.hidden = true;
+    }, 4000);
+}
+
+function getPlanId(plan) {
+    return plan?.id ?? plan?.floor_plan_id;
+}
+
+function normalizePlan(plan) {
+    return {
+        ...plan,
+        image: plan.image || plan.map_image || ''
+    };
+}
+
+function getErrorStatus(error) {
+    return (
+        error?.status ||
+        error?.statusCode ||
+        error?.response?.status ||
+        error?.cause?.status ||
+        null
+    );
+}
+
+function updateControls() {
+    const total = floorPlans.length;
+
+    $('previousPlan').disabled = total <= 1;
+    $('nextPlan').disabled = total <= 1;
+
+    $('renameFloorPlan').disabled = !total;
+    $('deleteFloorPlan').disabled = total <= 1;
+    $('planFile').disabled = !total;
+
+    $('carouselPosition').textContent =
+        `${total ? currentPlanIndex + 1 : 0} / ${total}`;
+
+    $('planCounter').textContent =
+        `${total} saved floor plan${total === 1 ? '' : 's'}`;
+}
+
+function updateDots() {
+    const container = $('carouselDots');
+    container.innerHTML = '';
+
+    floorPlans.forEach((plan, index) => {
+        const dot = document.createElement('button');
+
+        dot.type = 'button';
+        dot.className =
+            'carousel-dot' +
+            (index === currentPlanIndex ? ' active' : '');
+
+        dot.title = plan.name || `Floor Plan ${index + 1}`;
+
+        dot.setAttribute(
+            'aria-label',
+            `Show floor plan ${index + 1}`
+        );
+
+        dot.addEventListener('click', () => {
+            switchFloorPlan(index);
+        });
+
+        container.appendChild(dot);
+    });
+}
+
+/* IMAGE DISPLAY */
+
+function displayCurrentPlan() {
+    currentPlan = floorPlans[currentPlanIndex] || null;
+
+    if (!currentPlan) {
+        renderEmptyState();
+        return;
+    }
+
+    $('emptyState').hidden = true;
+    $('floorPlanContent').hidden = false;
+
+    $('currentPlanName').textContent =
+        currentPlan.name || `Floor Plan ${currentPlanIndex + 1}`;
+
+    const image = $('floorPlanImage');
+    const placeholder = $('imagePlaceholder');
+
+    // Reset the previous image state.
+    image.onload = null;
+    image.onerror = null;
+    image.hidden = true;
+
+    if (currentPlan.image) {
+        // Hide placeholder BEFORE loading the image.
+        placeholder.hidden = true;
+
+        image.onload = () => {
+            image.hidden = false;
+        };
+
+        image.onerror = () => {
+            image.hidden = true;
+            placeholder.hidden = false;
+
+            placeholder.querySelector('h3').textContent =
+                'Unable to Display Image';
+
+            placeholder.querySelector('p').textContent =
+                'The saved image could not be loaded. Try uploading it again.';
+        };
+
+        image.src = currentPlan.image;
+
+        // Handle cached images.
+        if (image.complete && image.naturalWidth > 0) {
+            image.hidden = false;
+            placeholder.hidden = true;
+        }
+
+    } else {
+        image.removeAttribute('src');
+        image.hidden = true;
+        placeholder.hidden = false;
+
+        placeholder.querySelector('h3').textContent =
+            'No Image Uploaded';
+
+        placeholder.querySelector('p').textContent =
+            'Upload a floor plan image to display it here.';
+    }
+
+    updateControls();
+    updateDots();
+}
+
+function renderEmptyState() {
+    currentPlan = null;
+
+    $('emptyState').hidden = false;
+    $('floorPlanContent').hidden = true;
+
+    updateControls();
+    updateDots();
+}
+
+/* LOAD FLOOR PLANS */
+
+async function init() {
+    $('currentPlanName').textContent = 'Loading floor plans...';
+
+    try {
+        await reloadFloorPlans();
+
+    } catch (error) {
+        console.error('Floor plan loading error:', error);
+
+        const status = getErrorStatus(error);
+
+        if (status === 401) {
+            showToast('Your session has expired. Please sign in again.');
+
+            setTimeout(() => {
+                location.href = 'auth.html?mode=login';
+            }, 1200);
+
+            return;
+        }
+
+        $('currentPlanName').textContent =
+            'Unable to load floor plans';
+
+        $('planCounter').textContent =
+            'Check the server connection or API response.';
+
+        showToast(
+            error.message ||
+            'Unable to load floor plans. Please try again.'
+        );
+    }
+}
+
+async function reloadFloorPlans(selectedId = null) {
+    const response = await LitMe.api('/api/floor-plans');
+
+    const receivedPlans =
+        response.plans ||
+        response.floorPlans ||
+        [];
+
+    floorPlans = receivedPlans.map(normalizePlan);
+
+    if (!floorPlans.length) {
+        currentPlanIndex = 0;
+        renderEmptyState();
+        return;
+    }
+
+    if (selectedId != null) {
+        const foundIndex = floorPlans.findIndex(
+            plan => String(getPlanId(plan)) === String(selectedId)
+        );
+
+        currentPlanIndex = foundIndex >= 0 ? foundIndex : 0;
+
+    } else {
+        currentPlanIndex = Math.min(
+            currentPlanIndex,
+            floorPlans.length - 1
+        );
+    }
+
+    displayCurrentPlan();
+}
+
+/* NAVIGATION */
+
+function switchFloorPlan(index) {
+    if (index < 0 || index >= floorPlans.length) return;
+
+    currentPlanIndex = index;
+    displayCurrentPlan();
+}
+
+$('previousPlan').addEventListener('click', () => {
+    if (floorPlans.length <= 1) return;
+
+    switchFloorPlan(
+        (currentPlanIndex - 1 + floorPlans.length) % floorPlans.length
+    );
+});
+
+$('nextPlan').addEventListener('click', () => {
+    if (floorPlans.length <= 1) return;
+
+    switchFloorPlan(
+        (currentPlanIndex + 1) % floorPlans.length
+    );
+});
+
+/* ADD FLOOR PLAN */
+
+$('addFloorPlan').addEventListener('click', async () => {
+    const name = prompt(
+        'Enter the floor plan name:',
+        `Floor Plan ${floorPlans.length + 1}`
+    );
+
+    if (!name || !name.trim()) return;
+
+    try {
+        const response = await LitMe.api('/api/floor-plans', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: name.trim()
+            })
+        });
+
+        const createdPlan =
+            response.plan ||
+            response.floorPlan ||
+            null;
+
+        await reloadFloorPlans(
+            createdPlan ? getPlanId(createdPlan) : null
+        );
+
+        showToast('New floor plan added successfully.');
+
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Unable to add floor plan.');
+    }
+});
+
+/* RENAME FLOOR PLAN */
+
+$('renameFloorPlan').addEventListener('click', async () => {
+    if (!currentPlan) {
+        return showToast('Select a floor plan first.');
+    }
+
+    const newName = prompt(
+        'Enter the new floor plan name:',
+        currentPlan.name || ''
+    );
+
+    if (!newName || !newName.trim()) return;
+
+    const selectedId = getPlanId(currentPlan);
+
+    try {
+        await LitMe.api(
+            `/api/floor-plans/${encodeURIComponent(selectedId)}`,
+            {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: newName.trim()
+                })
+            }
+        );
+
+        await reloadFloorPlans(selectedId);
+
+        showToast('Floor plan renamed successfully.');
+
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Unable to rename floor plan.');
+    }
+});
+
+/* DELETE FLOOR PLAN */
+
+$('deleteFloorPlan').addEventListener('click', async () => {
+    if (!currentPlan) return;
+
+    if (floorPlans.length <= 1) {
+        return showToast('At least one floor plan must remain.');
+    }
+
+    const planName = currentPlan.name || 'this floor plan';
+    const selectedId = getPlanId(currentPlan);
+
+    if (!confirm(
+        `Delete "${planName}"? This action cannot be undone.`
+    )) {
+        return;
+    }
+
+    try {
+        await LitMe.api(
+            `/api/floor-plans/${encodeURIComponent(selectedId)}`,
+            {
+                method: 'DELETE'
+            }
+        );
+
+        await reloadFloorPlans();
+
+        showToast('Floor plan deleted successfully.');
+
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Unable to delete floor plan.');
+    }
+});
+
+/* UPLOAD FLOOR PLAN IMAGE */
+
+$('planFile').addEventListener('change', async () => {
+    const file = $('planFile').files[0];
+
+    if (!file) return;
+
+    if (!currentPlan) {
+        $('planFile').value = '';
+        return showToast('Add a floor plan first.');
+    }
+
+    const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/gif'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        $('planFile').value = '';
+        return showToast('Choose a JPG, PNG, WEBP, or GIF image.');
+    }
+
+    if (file.size > 4 * 1024 * 1024) {
+        $('planFile').value = '';
+        return showToast('Image must be smaller than 4 MB.');
+    }
+
+    const selectedId = getPlanId(currentPlan);
+    const formData = new FormData();
+
+    formData.append('plan', file);
+
+    try {
+        const response = await LitMe.api(
+            `/api/floor-plans/${encodeURIComponent(selectedId)}/image`,
+            {
+                method: 'POST',
+                body: formData
+            }
+        );
+
+        if (response.image) {
+            currentPlan.image = response.image;
+        }
+
+        await reloadFloorPlans(selectedId);
+
+        showToast('Floor plan image uploaded successfully.');
+
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Unable to upload floor plan image.');
+
+    } finally {
+        $('planFile').value = '';
+    }
+});
+
+/* INITIAL LOAD */
+
+init();
+
+</script>
+
+</body>
+</html>
